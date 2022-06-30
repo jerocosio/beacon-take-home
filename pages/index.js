@@ -20,8 +20,9 @@ let videos = [
   {
     url: "videos/file3.mp4",
     username: "jeronimocosio",
-    song: "Andrea - Bad Bunny",
+    song: "Mushaboom - Feist",
     profileImage: "profile.jpeg",
+    text: "Who can create this sound at home?",
   },
 ];
 
@@ -29,27 +30,35 @@ export default function Home() {
   const [video, setVideo] = useState(0);
   const videoRef = useRef();
 
-  useEffect(() => {
-    function handleKeyDown(e) {
-      console.log(e.keyCode);
-      //Right arrow
-      console.log("Esto vale video", video);
-      if (e.keyCode === 39) {
-        setVideo(video + 1);
-      }
-      //Left arrow
-      console.log("Esto vale video", video);
-      if (e.keyCode === 37) {
-        setVideo(video - 1);
-      }
-    }
+  // useEffect(() => {
+  //   function handleKeyDown(e) {
+  //     console.log(e.keyCode);
+  //     //Right arrow
+  //     console.log("Esto vale video", video);
+  //     if (e.keyCode === 39) {
+  //       setVideo(video + 1);
+  //     }
+  //     //Left arrow
+  //     console.log("Esto vale video", video);
+  //     if (e.keyCode === 37) {
+  //       setVideo(video - 1);
+  //     }
+  //   }
 
-    document.addEventListener("keyup", handleKeyDown);
-    // Don't forget to clean up
-    return function cleanup() {
-      document.removeEventListener("keyup", handleKeyDown);
-    };
-  }, []);
+  //   document.addEventListener("keyup", handleKeyDown);
+  //   // Don't forget to clean up
+  //   return function cleanup() {
+  //     document.removeEventListener("keyup", handleKeyDown);
+  //   };
+  // }, []);
+
+  const nextVideo = () => {
+    if (video < 2) {
+      setVideo(video + 1);
+    } else {
+      setVideo(0);
+    }
+  };
 
   useEffect(() => {
     videoRef.current?.load();
@@ -78,12 +87,12 @@ export default function Home() {
             Your browser does not support the video tag.
           </video>
         </div>
-        <div className="z-30 flex w-screen">
+        <div className="z-30 flex w-screen" onClick={nextVideo}>
           <div className="w-full h-screen flex flex-col justify-between">
             <div className="flex justify-between w-full p-4 ">
               <div>
                 <p className=" font-bold text-white text-2xl drop-shadow">
-                  Reels {video}
+                  Reels
                 </p>
               </div>
               <div>
@@ -138,11 +147,11 @@ export default function Home() {
                     <span class="relative inline-block animate-pulse animate-bounce">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-12 w-12"
+                        className="h-10 w-10"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        strokeWidth={2}
+                        strokeWidth={1}
                       >
                         <path
                           strokeLinecap="round"
