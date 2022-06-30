@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
-import { usePopper } from "react-popper";
 import Head from "next/head";
 
 let videos = [
@@ -49,9 +48,6 @@ const solutions = [
 export default function Home() {
   const [video, setVideo] = useState(0);
   const videoRef = useRef();
-  let [referenceElement, setReferenceElement] = useState();
-  let [popperElement, setPopperElement] = useState();
-  let { styles, attributes } = usePopper(referenceElement, popperElement);
 
   const nextVideo = () => {
     if (video < 2) {
@@ -153,10 +149,7 @@ export default function Home() {
                       <Popover className="relative">
                         {({ open }) => (
                           <>
-                            <Popover.Button
-                              ref={setReferenceElement}
-                              className="mb-4 z-50"
-                            >
+                            <Popover.Button className="mb-4 z-50">
                               <span className="relative inline-block animate-pulse animate-bounce">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -190,9 +183,8 @@ export default function Home() {
                                 <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                                   <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-2">
                                     {solutions.map((item) => (
-                                      <a
+                                      <button
                                         key={item.name}
-                                        href={item.href}
                                         className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                                       >
                                         <div className="ml-4">
@@ -203,7 +195,7 @@ export default function Home() {
                                             {item.description}
                                           </p>
                                         </div>
-                                      </a>
+                                      </button>
                                     ))}
                                   </div>
                                 </div>
