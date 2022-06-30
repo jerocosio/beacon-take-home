@@ -1,10 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 
-let videos = ["videos/file2.mp4", "videos/file1.mp4", , "videos/file3.mp4"];
+let videos = [
+  {
+    url: "videos/file1.mp4",
+    username: "jeronimocosio",
+    song: "Andrea - Bad Bunny",
+    profileImage: "profile.jpeg",
+    text: "Check out my latest video! 🌷",
+  },
+  {
+    url: "videos/file2.mp4",
+    username: "myBestPlant",
+    song: "Harvest Moon - Poolside",
+    profileImage: "profile2.jpeg",
+    text: "Testing out my new products",
+    products: true,
+  },
+  {
+    url: "videos/file3.mp4",
+    username: "jeronimocosio",
+    song: "Andrea - Bad Bunny",
+    profileImage: "profile.jpeg",
+  },
+];
 
 export default function Home() {
   const [video, setVideo] = useState(0);
+  const videoRef = useRef();
+
   useEffect(() => {
     function handleKeyDown(e) {
       console.log(e.keyCode);
@@ -13,7 +37,7 @@ export default function Home() {
       if (e.keyCode === 39) {
         setVideo(video + 1);
       }
-      //LEft arrow
+      //Left arrow
       console.log("Esto vale video", video);
       if (e.keyCode === 37) {
         setVideo(video - 1);
@@ -26,7 +50,15 @@ export default function Home() {
       document.removeEventListener("keyup", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    videoRef.current?.load();
+  }, [video]);
+
   console.log("El video que queremos:", videos[video]);
+
+  const { url, username, song, profileImage, text, products } = videos[video];
+
   return (
     <div className=" bg-gray-300 h-screen">
       <Head>
@@ -35,8 +67,14 @@ export default function Home() {
       </Head>
       <div className="flex flex-col  h-screen justify-between relative">
         <div className="absolute w-full">
-          <video className=" h-screen w-full object-fill" loop autoPlay muted>
-            <source src={videos[video]} type="video/mp4" />
+          <video
+            className=" h-screen w-full object-fill"
+            loop
+            autoPlay
+            muted
+            ref={videoRef}
+          >
+            <source src={url} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
@@ -76,10 +114,10 @@ export default function Home() {
               <div className="text-white text-sm flex flex-col justify-end">
                 <div className="flex space-x-3 drop-shadow-2xl">
                   <div>
-                    <img src="profile.jpeg" className="h-8 w-8 rounded-full" />
+                    <img src={profileImage} className="h-8 w-8 rounded-full" />
                   </div>
                   <div>
-                    <p className="drop-shadow-lg">jeronimocosio</p>
+                    <p className="drop-shadow-lg">{username}</p>
                   </div>
                   <div>
                     <button className="text-sm p-1 px-2 text-white border border-gray-50 rounded drop-shadow-2xl">
@@ -87,18 +125,39 @@ export default function Home() {
                     </button>
                   </div>
                 </div>
-                <div>
-                  <p>Check out my latest video! 🌷</p>
+                <div className="mt-4">
+                  <p>{text}</p>
                 </div>
                 <div>
-                  <p>♫ Andrea - Bad Bunny</p>
+                  <p>♫ {song}</p>
                 </div>
               </div>
               <div className="text-white text-xs">
-                <div>
-                  <div className="h-12 w-12 bg-white rounded-full animate-pulse animate-bounce"></div>
-                </div>
-                <div>
+                {products && (
+                  <div className="mb-4">
+                    <span class="relative inline-block animate-pulse animate-bounce">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-12 w-12"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                        />
+                      </svg>
+                      <span class="z-40 absolute right-2 top-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+                        3
+                      </span>
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex flex-col items-center">
                   <div className="h-6 w-6 text-white mb-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +176,7 @@ export default function Home() {
                   </div>
                   <p className="mb-2">998k</p>
                 </div>
-                <div>
+                <div className="flex flex-col items-center">
                   <div className="h-6 w-6 text-white mb-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +195,7 @@ export default function Home() {
                   </div>
                   <p>639</p>
                 </div>
-                <div className="mb-2 mt-2 text-white">
+                <div className="mb-3 mt-2 text-white flex flex-col items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -152,9 +211,9 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-                <div>
-                  <div className="h-6 w-6 bg-white rounded mb-2">
-                    <img src="profile.jpeg" className="h-6 w-6 rounded" />
+                <div className="flex flex-col items-center">
+                  <div className="h-6 w-6 bg-white rounded mb-2 flex flex-col items-center">
+                    <img src={profileImage} className="h-6 w-6 rounded" />
                   </div>
                 </div>
               </div>
