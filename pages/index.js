@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
+import { Popover, Transition } from "@headlessui/react";
+import { usePopper } from "react-popper";
 import Head from "next/head";
 
 let videos = [
@@ -26,31 +28,30 @@ let videos = [
   },
 ];
 
+const solutions = [
+  {
+    name: "Teapot - $29.95",
+    description: "Lorem Ipsum Dolor itsum",
+    href: "##",
+  },
+  {
+    name: "Coaster - $4.95",
+    description: "Lorem Ipsum Dolor itsum",
+    href: "##",
+  },
+  {
+    name: "Teaspoon - 9.95",
+    description: "Lorem Ipsum Dolor itsum",
+    href: "##",
+  },
+];
+
 export default function Home() {
   const [video, setVideo] = useState(0);
   const videoRef = useRef();
-
-  // useEffect(() => {
-  //   function handleKeyDown(e) {
-  //     console.log(e.keyCode);
-  //     //Right arrow
-  //     console.log("Esto vale video", video);
-  //     if (e.keyCode === 39) {
-  //       setVideo(video + 1);
-  //     }
-  //     //Left arrow
-  //     console.log("Esto vale video", video);
-  //     if (e.keyCode === 37) {
-  //       setVideo(video - 1);
-  //     }
-  //   }
-
-  //   document.addEventListener("keyup", handleKeyDown);
-  //   // Don't forget to clean up
-  //   return function cleanup() {
-  //     document.removeEventListener("keyup", handleKeyDown);
-  //   };
-  // }, []);
+  let [referenceElement, setReferenceElement] = useState();
+  let [popperElement, setPopperElement] = useState();
+  let { styles, attributes } = usePopper(referenceElement, popperElement);
 
   const nextVideo = () => {
     if (video < 2) {
@@ -75,7 +76,11 @@ export default function Home() {
         <meta name="description" content="Take home excercise" />
       </Head>
       <div className="flex flex-col  h-screen justify-between relative">
-        <div className="absolute w-full">
+        <button
+          className="absolute bg-transparent h-1/2 w-full z-40"
+          onClick={nextVideo}
+        ></button>
+        <div className="absolute w-full z-10">
           <video
             className=" h-screen w-full object-fill"
             loop
@@ -87,7 +92,7 @@ export default function Home() {
             Your browser does not support the video tag.
           </video>
         </div>
-        <div className="z-30 flex w-screen" onClick={nextVideo}>
+        <div className="z-30 flex w-screen">
           <div className="w-full h-screen flex flex-col justify-between">
             <div className="flex justify-between w-full p-4 ">
               <div>
@@ -143,26 +148,71 @@ export default function Home() {
               </div>
               <div className="text-white text-xs">
                 {products && (
-                  <div className="mb-4">
-                    <span className="relative inline-block animate-pulse animate-bounce">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-10 w-10"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                        />
-                      </svg>
-                      <span className="z-40 absolute right-2 top-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
-                        3
-                      </span>
-                    </span>
+                  <div className=" mb-14 mr-10 ">
+                    <div className="fixed bottom-23">
+                      <Popover className="relative">
+                        {({ open }) => (
+                          <>
+                            <Popover.Button
+                              ref={setReferenceElement}
+                              className="mb-4 z-50"
+                            >
+                              <span className="relative inline-block animate-pulse animate-bounce">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-10 w-10"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  strokeWidth={1}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                                  />
+                                </svg>
+                                <span className="z-40 absolute right-2 top-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+                                  3
+                                </span>
+                              </span>
+                            </Popover.Button>
+                            <Transition
+                              as={Fragment}
+                              enter="transition ease-out duration-200"
+                              enterFrom="opacity-0 translate-y-1"
+                              enterTo="opacity-100 translate-y-0"
+                              leave="transition ease-in duration-150"
+                              leaveFrom="opacity-100 translate-y-0"
+                              leaveTo="opacity-0 translate-y-1"
+                            >
+                              <Popover.Panel className="absolute z-50 mt-3 w-screen max-w-sm -translate-x-[85%] -translate-y-[150%] transform px-4 sm:px-0">
+                                <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                                  <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-2">
+                                    {solutions.map((item) => (
+                                      <a
+                                        key={item.name}
+                                        href={item.href}
+                                        className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                                      >
+                                        <div className="ml-4">
+                                          <p className="text-sm font-medium text-gray-900">
+                                            {item.name}
+                                          </p>
+                                          <p className="text-sm text-gray-500">
+                                            {item.description}
+                                          </p>
+                                        </div>
+                                      </a>
+                                    ))}
+                                  </div>
+                                </div>
+                              </Popover.Panel>
+                            </Transition>
+                          </>
+                        )}
+                      </Popover>
+                    </div>
                   </div>
                 )}
 
